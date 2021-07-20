@@ -223,23 +223,27 @@ class FilmController extends Controller
 
     // }
 	public function DeleteFilm($ID){
-	echo "ID";
-
 		$isExitComment =  DB::table('comment')->where("Film_ID", $ID)->count();
     if($isExitComment >0){
-      return back()->with('error','You cannot delete it.Because The user account is related to the ticket list!!!');
+      // return back()->with('error','You cannot delete it.Because The user account is related to the ticket list!!!');
+			return response()->json([
+				'error' => 'You cannot delete it.Because The user account is related to the ticket list!!!'
+			]);
     }else{
       DB::table('film')->where("ID", $ID)->delete();
-      return back()->with('success','Record deleted successfully!!');
+			return response()->json([
+				'success' => 'Record deleted successfully!!'
+			]);
+      // return back()->with('success','Record deleted successfully!!');
     }
 
-    DB::table('comment')->where("film_id", $ID)->delete();
-    $film = DB::table('film')->where('ID', $ID)->first();
-    File::delete($film->Image);
-    DB::table('film')->where("ID", $ID)->delete();
-    return response()->json([
-      'success' => 'Record deleted successfully!'
-    ]);
+    // DB::table('comment')->where("film_id", $ID)->delete();
+    // $film = DB::table('film')->where('ID', $ID)->first();
+    // File::delete($film->Image);
+    // DB::table('film')->where("ID", $ID)->delete();
+    // return response()->json([
+    //   'success' => 'Record deleted successfully!'
+    // ]);
 }
 
     public function ChangeStatus($ID){

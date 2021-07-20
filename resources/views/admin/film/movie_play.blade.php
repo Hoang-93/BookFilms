@@ -62,7 +62,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($query as $item)
-                                        <tr>
+                                        <tr id="film-{{$item->ID}}">
                                             <td>{{ $dem }}</td>
                                             <td>{{ $item->Name }}</td>
                                             <td><img src="{{ asset('assets/images/film/'. $item->Image) }}" alt="" width="110px" /></td>
@@ -182,17 +182,27 @@
                     icon: 'warning',
                     buttons: ["Cancel", "Yes!"],
                 }).then((value)=> {
-                    console.log("value",value);
-                    console.log($(this).data('id'));
+                    const filmId = $(this).data('id');
                     if (value) {
                         $.ajax({
                         data: {},
-                        url: '/Admin/Film/Delete/' + $(this).data('id'),
+                        url: '/Admin/Film/Delete/' + filmId,
                         dataType: 'Json',
                         type: 'GET',
-                        success: function (json) {
-
-                                // window.location.href = "/Admin/Film/MoviePlay";
+                        success: function (res) {
+                            if (res.success && res.success.length > 0) {
+                                $('#film-'+filmId).remove();
+                                PNotify.success({
+                                    title: 'NOTIFICATION!!',
+                                    text: res.success
+                                });
+                            } else if (res.error) {
+                                PNotify.error({
+                                    title: 'NOTIFICATION!!',
+                                    text: res.error
+                                });
+                            }
+                            // window.location.href = "/Admin/Film/MoviePlay";
                         
                         }
                     })
